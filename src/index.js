@@ -1,4 +1,5 @@
 import React from 'react';
+import '~/config/ReactotronConfig';
 
 import Main from '~/pages/Main';
 
