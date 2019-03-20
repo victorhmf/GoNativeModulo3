@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Modal, Text, TouchableOpacity } from 'react-native';
+import { Modal } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as userModalActions } from '~/store/ducks/userModal';
 
 import {
-  Container,
   ModalContainer,
   ModalInner,
   Title,
@@ -10,60 +12,53 @@ import {
   ButtonContainer,
   Button,
   ButtonText,
-  colors,
 } from './styles';
 
-export default class AddUserModal extends Component {
+class AddUserModal extends Component {
   state = {
-    modalVisible: false,
+    userInput: '',
   };
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-
   render() {
+    const { userModal, hideModal } = this.props;
     return (
-      <Container>
-        <Modal
-          animationType="slide"
-          transparent
-          visible={this.state.modalVisible}
-          onRequestClose={() => this.setModalVisible(false)}
-        >
-          <ModalContainer>
-            <ModalInner>
-              <Title>Adicionar novo Local</Title>
-              <UserInput
-                placeholder="Usuário no GitHub"
-                autoCapitalize="none"
-                autoComplete="none"
-                onChangeText={() => {}}
-              />
-              <ButtonContainer>
-                <Button
-                  marginRight
-                  onPress={() => {
-                    this.setModalVisible(false);
-                  }}
-                >
-                  <ButtonText>Cancelar</ButtonText>
-                </Button>
-                <Button color onPress={() => {}}>
-                  <ButtonText>Salvar</ButtonText>
-                </Button>
-              </ButtonContainer>
-            </ModalInner>
-          </ModalContainer>
-        </Modal>
-        <TouchableOpacity
-          onPress={() => {
-            this.setModalVisible(true);
-          }}
-        >
-          <Text>Show Modal</Text>
-        </TouchableOpacity>
-      </Container>
+      <Modal
+        animationType="slide"
+        transparent
+        visible={userModal.visible}
+        onRequestClose={() => hideModal()}
+      >
+        <ModalContainer>
+          <ModalInner>
+            <Title>Adicionar novo Local</Title>
+            <UserInput
+              placeholder="Usuário no GitHub"
+              autoCapitalize="none"
+              autoComplete="none"
+              onChangeText={() => {}}
+            />
+            <ButtonContainer>
+              <Button marginRight onPress={() => hideModal()}>
+                <ButtonText>Cancelar</ButtonText>
+              </Button>
+              <Button color onPress={() => {}}>
+                <ButtonText>Salvar</ButtonText>
+              </Button>
+            </ButtonContainer>
+          </ModalInner>
+        </ModalContainer>
+      </Modal>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  userModal: state.userModal,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(userModalActions, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AddUserModal);
