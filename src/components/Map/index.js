@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
-import { Container, AnnotationContainer, AnnotationFill } from './styles';
+import {
+  AnnotationContainer,
+  AnnotationFill,
+  CallOutContainer,
+  CallOutInner,
+  UserBio,
+  UserName,
+  Tip,
+} from './styles';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -21,17 +29,29 @@ class Map extends Component {
     await showModal(coordinates);
   };
 
-  renderAnnotations = () => (
-    <MapboxGL.PointAnnotation id="rocketseat" coordinate={[-49.6446024, -27.2108001]}>
-      <AnnotationContainer>
-        <AnnotationFill />
-      </AnnotationContainer>
+  renderCallOut = user => (
+    <MapboxGL.Callout>
+      <CallOutContainer>
+        <CallOutInner>
+          <UserName>{user.name}</UserName>
+          <UserBio>{user.bio}</UserBio>
+        </CallOutInner>
+        <Tip />
+      </CallOutContainer>
+    </MapboxGL.Callout>
+  );
 
-      <MapboxGL.Callout title="Rocketseat House" />
+  renderAnnotations = user => (
+    <MapboxGL.PointAnnotation key={user.id} id={user.id.toString()} coordinate={user.coordinates}>
+      <AnnotationContainer>
+        <AnnotationFill source={{ uri: user.avatar_url }} />
+      </AnnotationContainer>
+      {this.renderCallOut(user)}
     </MapboxGL.PointAnnotation>
   );
 
   render() {
+    const { users } = this.props;
     return (
       <MapboxGL.MapView
         centerCoordinate={[-49.6446024, -27.2108001]}
@@ -41,13 +61,15 @@ class Map extends Component {
         onLongPress={this.handleOnLongPress}
         styleURL={MapboxGL.StyleURL.Dark}
       >
-        {this.renderAnnotations()}
+        {users.data.map(user => this.renderAnnotations(user))}
       </MapboxGL.MapView>
     );
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  users: state.users,
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators(userModalActions, dispatch);
 

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Modal } from 'react-native';
+import { Modal, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as userModalActions } from '~/store/ducks/userModal';
+import { Creators as userActions } from '~/store/ducks/users';
 
 import {
   ModalContainer,
@@ -19,8 +20,17 @@ class AddUserModal extends Component {
     userInput: '',
   };
 
+  handleOnPress = async () => {
+    const { addUserRequest, hideModal, userModal } = this.props;
+    const { userInput } = this.state;
+
+    await addUserRequest(userInput, userModal.coordinates);
+    this.setState({ userInput: '' });
+  };
+
   render() {
-    const { userModal, hideModal } = this.props;
+    const { userModal, hideModal, loading } = this.props;
+    const { userInput } = this.state;
     return (
       <Modal
         animationType="slide"
@@ -35,14 +45,19 @@ class AddUserModal extends Component {
               placeholder="Usuário no GitHub"
               autoCapitalize="none"
               autoComplete="none"
-              onChangeText={() => {}}
+              onChangeText={text => this.setState({ userInput: text })}
+              value={userInput}
             />
             <ButtonContainer>
               <Button marginRight onPress={() => hideModal()}>
                 <ButtonText>Cancelar</ButtonText>
               </Button>
-              <Button color onPress={() => {}}>
-                <ButtonText>Salvar</ButtonText>
+              <Button color onPress={this.handleOnPress}>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <ButtonText>Salvar</ButtonText>
+                )}
               </Button>
             </ButtonContainer>
           </ModalInner>
@@ -54,9 +69,10 @@ class AddUserModal extends Component {
 
 const mapStateToProps = state => ({
   userModal: state.userModal,
+  loading: state.users.loading,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(userModalActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ ...userModalActions, ...userActions }, dispatch);
 
 export default connect(
   mapStateToProps,

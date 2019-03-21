@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.View``;
-
 export const ModalContainer = styled.View`
   flex: 1;
   justify-content: center;
