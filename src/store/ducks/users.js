@@ -28,10 +28,9 @@ export default function users(state = INITIAL_STATE, action) {
       return {
         data: [...state.data, action.payload.data],
         loading: false,
-        error: action.payload.error,
       };
     case Types.FAILURE:
-      return { ...state, loading: false, error: true };
+      return { ...state, loading: false, error: action.payload.error };
     default:
       return state;
   }

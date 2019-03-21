@@ -13,6 +13,7 @@ import {
   ButtonContainer,
   Button,
   ButtonText,
+  Error
 } from './styles';
 
 class AddUserModal extends Component {
@@ -29,7 +30,7 @@ class AddUserModal extends Component {
   };
 
   render() {
-    const { userModal, hideModal, loading } = this.props;
+    const { userModal, hideModal, loading, error } = this.props;
     const { userInput } = this.state;
     return (
       <Modal
@@ -41,6 +42,7 @@ class AddUserModal extends Component {
         <ModalContainer>
           <ModalInner>
             <Title>Adicionar novo Local</Title>
+            {!!error && <Error>{error}</Error>}
             <UserInput
               placeholder="Usuário no GitHub"
               autoCapitalize="none"
@@ -70,6 +72,7 @@ class AddUserModal extends Component {
 const mapStateToProps = state => ({
   userModal: state.userModal,
   loading: state.users.loading,
+  error: state.users.error,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({ ...userModalActions, ...userActions }, dispatch);

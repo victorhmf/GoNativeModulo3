@@ -54,3 +54,11 @@ export const ButtonText = styled.Text`
   color: white;
   font-size: 14px;
 `;
+
+export const Error = styled.Text`
+  color: red;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+`;

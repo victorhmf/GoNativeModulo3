@@ -5,7 +5,9 @@ import { Creators as UserModalActions } from '~/store/ducks/userModal';
 
 export function* addUser(action) {
   try {
-    const { data } = yield call(api.get, `/users/${action.payload.username}`);
+    const { username } = action.payload;
+
+    const { data } = yield call(api.get, `/users/${username}`);
 
     const isDuplicated = yield select(state => state.users.data.find(user => user.id === data.id));
 
@@ -21,10 +23,9 @@ export function* addUser(action) {
       };
 
       yield put(UserActions.addUserSuccess(userData));
+      yield put(UserModalActions.hideModal());
     }
   } catch (err) {
     yield put(UserActions.addUserFailure('Usuário não encontrado'));
-  } finally {
-    yield put(UserModalActions.hideModal());
   }
 }
