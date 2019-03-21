@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as userModalActions } from '~/store/ducks/userModal';
 import { Creators as userActions } from '~/store/ducks/users';
+import PropTypes from 'prop-types';
 
 import {
   ModalContainer,
@@ -13,16 +14,27 @@ import {
   ButtonContainer,
   Button,
   ButtonText,
-  Error
+  Error,
 } from './styles';
 
 class AddUserModal extends Component {
+  static propTypes = {
+    addUserRequest: PropTypes.func.isRequired,
+    hideModal: PropTypes.func.isRequired,
+    userModal: PropTypes.shape({
+      visible: PropTypes.bool,
+      coordinates: PropTypes.array,
+    }).isRequired,
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.string]).isRequired,
+  };
+
   state = {
     userInput: '',
   };
 
   handleOnPress = async () => {
-    const { addUserRequest, hideModal, userModal } = this.props;
+    const { addUserRequest, userModal } = this.props;
     const { userInput } = this.state;
 
     await addUserRequest(userInput, userModal.coordinates);
@@ -30,7 +42,9 @@ class AddUserModal extends Component {
   };
 
   render() {
-    const { userModal, hideModal, loading, error } = this.props;
+    const {
+      userModal, hideModal, loading, error,
+    } = this.props;
     const { userInput } = this.state;
     return (
       <Modal
@@ -75,7 +89,9 @@ const mapStateToProps = state => ({
   error: state.users.error,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({ ...userModalActions, ...userActions }, dispatch);
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({ ...userModalActions, ...userActions }, dispatch)
+);
 
 export default connect(
   mapStateToProps,

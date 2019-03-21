@@ -11,7 +11,7 @@ export const Types = {
 const INITIAL_STATE = {
   data: [],
   loading: false,
-  error: null,
+  error: '',
   coordinates: [],
 };
 

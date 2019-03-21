@@ -12,6 +12,7 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 
 import { Creators as userModalActions } from '~/store/ducks/userModal';
 
@@ -20,6 +21,16 @@ MapboxGL.setAccessToken(
 );
 
 class Map extends Component {
+  static propTypes = {
+    showModal: PropTypes.func.isRequired,
+    users: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      bio: PropTypes.string,
+      avatar_url: PropTypes.string,
+    }).isRequired,
+  };
+
   handleOnLongPress = async (e) => {
     const { screenPointX, screenPointY } = e.properties;
 
